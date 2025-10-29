@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login | WebLogin</title>
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --glass-bg: rgba(255, 255, 255, .06);
+      --glass-border: rgba(255, 255, 255, .12);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+      --input-bg: rgba(255, 255, 255, .04);
+      --input-border: rgba(255, 255, 255, .15);
+      --brand: #6366f1;
+      --brand-light: #818cf8;
+      --brand-dark: #4f46e5;
+      --accent: #06b6d4;
+      --accent-pink: #ec4899;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      background: #0a0a0f;
+      overflow-x: hidden;
+      color: #f8fafc;
+      position: relative;
+    }
+
+    /* Video de fondo mejorado */
+    .bg-video {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f0a1a 0%, #1a1a2e 50%, #0a1428 100%);
+    }
+    
+    .bg-video video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      filter: brightness(.35) saturate(1.2) contrast(1.1);
+      opacity: .9;
+    }
+
+    /* Overlay con efectos avanzados */
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 85% 15%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.12) 0%, transparent 55%);
+    }
+
+    /* Partículas flotantes mejoradas */
+    .bg-particles {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: .15;
+      animation: floatParticle 25s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) {
+      top: 20%;
+      left: 10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--brand) 0%, transparent 70%);
+      animation-delay: 0s;
+    }
+
+    .particle:nth-child(2) {
+      bottom: 20%;
+      right: 15%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+      animation-delay: -8s;
+    }
+
+    .particle:nth-child(3) {
+      top: 60%;
+      left: 60%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, var(--accent-pink) 0%, transparent 70%);
+      animation-delay: -16s;
+    }
+
+    @keyframes floatParticle {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(40px, -40px) scale(1.15); }
+      50% { transform: translate(-30px, 30px) scale(.85); }
+      75% { transform: translate(25px, 15px) scale(1.05); }
+    }
+
+    /* Grid de fondo sutil */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    /* Layout */
+    .page-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* Contenedor de login con animación */
+    .login-container {
+      width: min(94vw, 480px);
+      animation: slideUp .8s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Logo/Brand con efectos premium */
+    .brand-logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 2rem;
+      background: linear-gradient(135deg, var(--brand), var(--accent), var(--accent-pink));
+      background-size: 200% 200%;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 
+        0 8px 32px rgba(99, 102, 241, .4),
+        0 0 60px rgba(99, 102, 241, .2),
+        inset 0 1px 0 rgba(255, 255, 255, .3);
+      position: relative;
+      overflow: hidden;
+      animation: gradientShift 8s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .brand-logo::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,.15), transparent);
+      animation: shimmer 3s infinite;
+      border-radius: 18px;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { transform: translateX(-100%) rotate(45deg); }
+      50% { transform: translateX(100%) rotate(45deg); }
+    }
+
+    .brand-logo svg {
+      width: 36px;
+      height: 36px;
+      color: white;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+    }
+
+    /* Tarjeta glass ultra premium */
+    .glass-card {
+      position: relative;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      box-shadow: 
+        var(--glass-shadow),
+        0 0 80px rgba(99, 102, 241, .08),
+        inset 0 1px 0 rgba(255, 255, 255, .08);
+      backdrop-filter: blur(24px) saturate(200%);
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
+      padding: 3rem 2.5rem;
+      transition: all .4s cubic-bezier(.4, 0, .2, 1);
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+    }
+
+    .glass-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      padding: 1px;
+      background: linear-gradient(145deg, rgba(255,255,255,.1), transparent 50%, rgba(255,255,255,.05));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Glow effect al hacer hover */
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, .3);
+      box-shadow: 
+        0 12px 48px rgba(0, 0, 0, .45),
+        0 0 100px rgba(99, 102, 241, .15),
+        inset 0 1px 0 rgba(255, 255, 255, .1);
+      transform: translateY(-4px);
+    }
+
+    /* Título con gradiente animado */
+    .login-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: .5rem;
+      background: linear-gradient(135deg, #fff 0%, #e0e7ff 50%, #ddd6fe 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -.03em;
+      animation: textShine 8s ease-in-out infinite;
+    }
+
+    @keyframes textShine {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+      letter-spacing: .01em;
+    }
+
+    /* Inputs con efectos avanzados */
+    .input-group-custom {
+      position: relative;
+      margin-bottom: 1.75rem;
+    }
+
+    .form-label {
+      color: #cbd5e1;
+      font-size: .875rem;
+      font-weight: 600;
+      margin-bottom: .6rem;
+      display: block;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      font-size: .75rem;
+    }
+
+    .form-control {
+      background: var(--input-bg);
+      border: 2px solid var(--input-border);
+      color: #f8fafc;
+      padding: 1rem 1.25rem;
+      border-radius: 14px;
+      font-size: 1rem;
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      font-weight: 400;
+      position: relative;
+    }
+
+    .form-control:focus {
+      color: #fff;
+      background: rgba(255, 255, 255, .08);
+      border-color: var(--brand);
+      box-shadow: 
+        0 0 0 4px rgba(99, 102, 241, .12),
+        0 8px 16px rgba(99, 102, 241, .1),
+        inset 0 1px 2px rgba(255, 255, 255, .1);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    .form-control:hover:not(:focus) {
+      border-color: rgba(255, 255, 255, .25);
+      background: rgba(255, 255, 255, .06);
+    }
+
+    /* Icono en el input (efecto premium) */
+    .input-group-custom::after {
+      content: '';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      opacity: .3;
+      pointer-events: none;
+      transition: opacity .3s ease;
+    }
+
+    .input-group-custom:has(.form-control:focus)::after {
+      opacity: .6;
+    }
+
+    ::placeholder {
+      color: #64748b;
+      opacity: 1;
+      font-weight: 300;
+    }
+
+    .invalid-feedback {
+      color: #fca5a5;
+      font-size: .8rem;
+      margin-top: .5rem;
+      display: none;
+      font-weight: 500;
+    }
+
+    .was-validated .form-control:invalid ~ .invalid-feedback {
+      display: block;
+    }
+
+    /* Botón principal ultra premium */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 50%, var(--brand) 100%);
+      background-size: 200% auto;
+      border: none;
+      color: white;
+      padding: 1rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: .02em;
+      box-shadow: 
+        0 8px 24px rgba(99, 102, 241, .4),
+        0 4px 12px rgba(99, 102, 241, .3),
+        inset 0 1px 0 rgba(255, 255, 255, .2);
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,.15), transparent);
+      transform: translateX(-100%) skewX(-15deg);
+      transition: transform .6s ease;
+    }
+
+    .btn-primary:hover {
+      background-position: 100% center;
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 
+        0 12px 32px rgba(99, 102, 241, .5),
+        0 6px 16px rgba(99, 102, 241, .4),
+        0 0 40px rgba(99, 102, 241, .2),
+        inset 0 1px 0 rgba(255, 255, 255, .25);
+    }
+
+    .btn-primary:hover::before {
+      transform: translateX(100%) skewX(-15deg);
+    }
+
+    .btn-primary:active {
+      transform: translateY(-1px) scale(.99);
+      box-shadow: 
+        0 6px 20px rgba(99, 102, 241, .45),
+        inset 0 2px 4px rgba(0, 0, 0, .2);
+    }
+
+    .btn-primary:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-label,
+    .spinner-border {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Alert ultra moderno */
+    .alert {
+      border-radius: 14px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.75rem;
+      font-size: .9rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alert::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+    }
+
+    .alert-success {
+      background: rgba(34, 197, 94, .12);
+      color: #86efac;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, .15);
+    }
+
+    .alert-success::before {
+      background: linear-gradient(180deg, #22c55e, #16a34a);
+    }
+
+    .alert-danger {
+      background: rgba(239, 68, 68, .12);
+      color: #fca5a5;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, .15);
+    }
+
+    .alert-danger::before {
+      background: linear-gradient(180deg, #ef4444, #dc2626);
+    }
+
+    .alert-warning {
+      background: rgba(251, 146, 60, .12);
+      color: #fdba74;
+      box-shadow: 0 4px 12px rgba(251, 146, 60, .15);
+    }
+
+    .alert-warning::before {
+      background: linear-gradient(180deg, #fb923c, #f97316);
+    }
+
+    /* Spinner mejorado */
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+      border-width: 2px;
+    }
+
+    /* Responsive optimizado */
+    @media (max-width: 576px) {
+      .glass-card {
+        padding: 2.5rem 1.75rem;
+        border-radius: 24px;
+      }
+
+      .login-title {
+        font-size: 1.65rem;
+      }
+
+      .brand-logo {
+        width: 56px;
+        height: 56px;
+      }
+
+      .brand-logo svg {
+        width: 32px;
+        height: 32px;
+      }
+
+      .login-subtitle {
+        font-size: .95rem;
+      }
+    }
+
+    /* Animaciones de entrada escalonadas */
+    .fade-in-up {
+      animation: fadeInUp .6s cubic-bezier(.16, 1, .3, 1) forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .input-group-custom:nth-child(1) {
+      animation: fadeInUp .6s cubic-bezier(.16, 1, .3, 1) .15s forwards;
+      opacity: 0;
+    }
+
+    .input-group-custom:nth-child(2) {
+      animation: fadeInUp .6s cubic-bezier(.16, 1, .3, 1) .25s forwards;
+      opacity: 0;
+    }
+
+    .btn-primary {
+      animation: fadeInUp .6s cubic-bezier(.16, 1, .3, 1) .35s forwards;
+      opacity: 0;
+    }
+
+    /* Efecto de resplandor al enfocar */
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, .3); }
+      50% { box-shadow: 0 0 40px rgba(99, 102, 241, .5); }
+    }
+
+    .form-control:focus {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video de fondo -->
+  <div class="bg-video" aria-hidden="true">
+    <video id="bgVideo"
+           autoplay
+           muted
+           loop
+           playsinline
+           preload="metadata"
+           poster="https://images.unsplash.com/photo-1527443154391-507e9dc6c5cc?q=80&w=1920&auto=format&fit=crop">
+      <source src="https://storage.coverr.co/videos/coverr-sun-rays-forest-8726/1080p.mp4" type="video/mp4" />
+      <source src="https://storage.coverr.co/videos/coverr-sun-rays-forest-8726/1080p.webm" type="video/webm" />
+      Tu navegador no soporta video HTML5.
+    </video>
+  </div>
+
+  <!-- Grid de fondo -->
+  <div class="bg-grid"></div>
+
+  <!-- Overlay con gradientes -->
+  <div class="bg-overlay"></div>
+
+  <!-- Partículas flotantes -->
+  <div class="bg-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <!-- Contenido principal -->
+  <main class="page-wrap">
+    <div class="login-container">
+      <!-- Logo/Brand -->
+      <div class="brand-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      </div>
+
+      <div class="glass-card">
+        <h1 class="login-title">Bienvenido</h1>
+        <p class="login-subtitle">Inicia sesión para continuar</p>
+
+        <!-- Alerta -->
+        <div id="alertBox" class="alert" role="alert" style="display:none"></div>
+
+        <form id="loginForm" novalidate>
+          <div class="input-group-custom">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input id="email" name="email" type="email" class="form-control"
+                   placeholder="tu@email.com" autocomplete="username" required />
+            <div class="invalid-feedback">Ingresa un email válido</div>
+          </div>
+
+          <div class="input-group-custom">
+            <label for="password" class="form-label">Contraseña</label>
+            <input id="password" name="password" type="password" class="form-control"
+                   placeholder="••••••••" autocomplete="current-password" minlength="1" required />
+            <div class="invalid-feedback">La contraseña es obligatoria</div>
+          </div>
+
+          <button id="submitBtn" type="submit" class="btn btn-primary w-100">
+            <span class="btn-label">Iniciar sesión</span>
+            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.getElementById('bgVideo')?.pause();
+      }
+    } catch(_) {}
+
+    const API_URL = "/api/login";
+
+    const alertBox  = document.getElementById("alertBox");
+    const loginForm = document.getElementById("loginForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const btnSpin   = submitBtn.querySelector(".spinner-border");
+
+    const showAlert = (type, msg) => {
+      alertBox.className = `alert alert-${type}`;
+      alertBox.textContent = msg;
+      alertBox.style.display = "block";
+    };
+    
+    const hideAlert = () => {
+      alertBox.style.display = "none";
+      alertBox.textContent = "";
+      alertBox.className = "alert";
+    };
+    
+    const setLoading = (v) => {
+      submitBtn.disabled = !!v;
+      btnSpin.classList.toggle("d-none", !v);
+    };
+
+    function validateForm() {
+      loginForm.classList.remove("was-validated");
+      if (!loginForm.checkValidity()) {
+        loginForm.classList.add("was-validated");
+        return false;
+      }
+      return true;
+    }
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      hideAlert();
+      if (!validateForm()) return;
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      setLoading(true);
+
+      try {
+        const resp = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data?.message === "ok") {
+            showAlert("success", "✓ Inicio de sesión exitoso");
+          } else {
+            showAlert("warning", "Respuesta inesperada de la API");
+          }
+        } else if (resp.status === 401) {
+          let detail = "Credenciales inválidas";
+          try {
+            const err = await resp.json();
+            if (err?.detail === "wrong_password") detail = "Contraseña incorrecta";
+            if (err?.detail === "user_not_found") detail = "El usuario no existe";
+          } catch(_) {}
+          showAlert("danger", detail);
+        } else {
+          let msg = `Error ${resp.status} al contactar la API`;
+          try {
+            const err = await resp.json();
+            if (err?.detail) msg += `: ${err.detail}`;
+          } catch(_) {}
+          showAlert("danger", msg);
+        }
+      } catch(_) {
+        showAlert("danger", "No se pudo contactar la API. Verifica que esté corriendo");
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
